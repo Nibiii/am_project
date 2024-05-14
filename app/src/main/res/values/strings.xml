@@ -1,0 +1,23 @@
+<resources>
+    <string name="appName">SUPER SZLAKI TURYSTYCZNE</string>
+    <string-array name="paths">
+        <item>Zielony</item>
+        <item>Niebieski</item>
+        <item>Żółty</item>
+        <item>Czerwony</item>
+    </string-array>
+    <string-array name="pathColors">
+        <item>green</item>
+        <item>blue</item>
+        <item>yellow</item>
+        <item>red</item>
+    </string-array>
+    <string-array name="pathDescriptions">
+        <item>Trasa jest łatwa, idealna dla rodzin z dziećmi. Trasa przechodzi przez piękne lasy, łąki i małe strumienie.</item>
+        <item>Trasa o średnim stopniu trudności, która prowadzi przez różnorodne tereny, w tym góry, doliny i jeziora.</item>
+        <item>Trasa jest wymagająca, zalecana dla doświadczonych turystów. Szlak prowadzi przez strome wzgórza i skaliste tereny.</item>
+        <item>Szlak dla zaawansowanych turystów, prowadzący przez wysokie góry i wąwozy. Przygotuj się na prawdziwe wyzwanie!</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

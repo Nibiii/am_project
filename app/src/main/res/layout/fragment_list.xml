@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/flFragmentList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layoutFragmentList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".FragmentList"
+        android:orientation="vertical" />
+</FrameLayout>
