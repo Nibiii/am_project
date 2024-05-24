@@ -54,6 +54,50 @@ import androidx.recyclerview.widget.RecyclerView
 //    }
 //}
 
+class TrailAdapter : RecyclerView.Adapter<TrailAdapter.TrailViewHolder>() {
+
+    private var trails: List<Trail> = emptyList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrailViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_list_item, parent, false)
+        return TrailViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: TrailViewHolder, position: Int) {
+        val trail = trails[position]
+        holder.bind(trail)
+    }
+
+    override fun getItemCount(): Int = trails.size
+
+    fun setTrails(trails: List<Trail>) {
+        this.trails = trails
+        notifyDataSetChanged()
+    }
+
+    class TrailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val trailName: TextView = itemView.findViewById(R.id.trailName)
+        private val trailDescription: TextView = itemView.findViewById(R.id.trailDescription)
+
+        fun bind(trail: Trail) {
+            trailName.text = trail.name
+            trailDescription.text = trail.description
+
+            itemView.setOnClickListener {
+                val startColor = ContextCompat.getColor(itemView.context, android.R.color.transparent)
+                val endColor = ContextCompat.getColor(itemView.context, android.R.color.darker_gray)
+                animateBackgroundColor(itemView, startColor, endColor, 150L)
+
+                val context = itemView.context
+                val intent = Intent(context, SecondaryActivity::class.java).apply {
+                    putExtra("trail", trail)
+                }
+                context.startActivity(intent)
+            }
+        }
+    }
+}
+
 fun animateBackgroundColor(view: View, startColor: Int, endColor: Int, duration: Long) {
     val colorAnimatorForward = ObjectAnimator.ofArgb(view, "backgroundColor", startColor, endColor)
     val colorAnimatorReverse = ObjectAnimator.ofArgb(view, "backgroundColor", endColor, startColor)

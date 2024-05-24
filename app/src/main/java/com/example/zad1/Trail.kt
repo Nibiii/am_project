@@ -10,12 +10,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Entity(tableName = "trails")
@@ -26,7 +29,8 @@ data class Trail(
     var difficulty: String,
     var length: Int,
     var stopwatchRunning: Boolean = false,
-    var stopwatchStartTime: Long = 0L
+    var stopwatchStartTime: Long = 0L,
+    var elapsedTime: Long = 0L
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -35,6 +39,7 @@ data class Trail(
         parcel.readString() ?: "",
         parcel.readInt() ?: 0,
         parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
         parcel.readLong()
     )
 
@@ -46,6 +51,7 @@ data class Trail(
         parcel.writeInt(length)
         parcel.writeByte(if (stopwatchRunning) 1 else 0)
         parcel.writeLong(stopwatchStartTime)
+        parcel.writeLong(elapsedTime)
     }
 
     override fun describeContents(): Int {
@@ -63,45 +69,13 @@ data class Trail(
     }
 }
 
-class TrailAdapter : RecyclerView.Adapter<TrailAdapter.TrailViewHolder>() {
-
-    private var trails: List<Trail> = emptyList()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrailViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_list_item, parent, false)
-        return TrailViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TrailViewHolder, position: Int) {
-        val trail = trails[position]
-        holder.bind(trail)
-    }
-
-    override fun getItemCount(): Int = trails.size
-
-    fun setTrails(trails: List<Trail>) {
-        this.trails = trails
-        notifyDataSetChanged()
-    }
-
-    class TrailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val trailName: TextView = itemView.findViewById(R.id.trailName)
-        private val trailDescription: TextView = itemView.findViewById(R.id.trailDescription)
-
-        fun bind(trail: Trail) {
-            trailName.text = trail.name
-            trailDescription.text = trail.description
-        }
-    }
-}
-
 class TrailViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TrailRepository
     val allTrails: LiveData<List<Trail>>
 
     init {
-        val trailDao = AppDatabase.getDatabase(application).trailDao()
+        val trailDao = (application as MyApplication).database.trailDao()
         repository = TrailRepository(trailDao)
         allTrails = repository.allTrails
     }
@@ -152,16 +126,42 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "trail_database"
-                ).build()
+                )
+                .addCallback(AppDatabaseCallback(scope))
+                .build()
                 INSTANCE = instance
                 instance
             }
+        }
+    }
+
+    private class AppDatabaseCallback(
+        private val scope: CoroutineScope
+    ) : Callback() {
+
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            INSTANCE?.let { database ->
+                scope.launch {
+                    populateDatabase(database.trailDao())
+                }
+            }
+        }
+
+        suspend fun populateDatabase(trailDao: TrailDao) {
+            // Insert the initial data into the database here.
+            val trails = listOf(
+                Trail(name = "Trail 1", description = "Description 1", difficulty = "Easy", length = 1),
+                Trail(name = "Trail 2", description = "Description 2", difficulty = "Medium", length = 1),
+                Trail(name = "Trail 3", description = "Description 3", difficulty = "Hard", length = 1)
+            )
+            trails.forEach { trailDao.insert(it) }
         }
     }
 }

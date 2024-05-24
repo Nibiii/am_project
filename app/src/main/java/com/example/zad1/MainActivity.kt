@@ -14,9 +14,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        trailViewModel.allTrails.observe(this, Observer { trails ->
-        })
-
         // Load the TrailListFragment when the activity is created
         if (savedInstanceState == null) {
             supportFragmentManager.commit {

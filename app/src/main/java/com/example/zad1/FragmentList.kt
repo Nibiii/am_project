@@ -1,6 +1,7 @@
 package com.example.zad1
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +47,7 @@ class FragmentList : Fragment(), OnTrailClickListener {
 //            Trail("Trail 16", "Very Hard", "Expert level trail with rough terrain", 200)
 //        )
 
-
+        Log.d("info", "odpaloned")
         trailAdapter = TrailAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
