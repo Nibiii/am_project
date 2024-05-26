@@ -24,7 +24,7 @@ class SecondaryActivity : AppCompatActivity() {
                 val detailFragment = TrailDetailFragment.newInstance(it)
                 val stopwatchFragment = StopwatchFragment.newInstance(it.id)
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.trailDescription, detailFragment)
+                    .replace(R.id.trailDescriptionFl, detailFragment)
                     .commit()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.stopwatch, stopwatchFragment)

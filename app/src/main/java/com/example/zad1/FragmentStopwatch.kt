@@ -3,6 +3,7 @@ package com.example.zad1
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import java.util.Locale
+
 
 class StopwatchFragment : Fragment() {
 
@@ -55,20 +59,29 @@ class StopwatchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trail = trailViewModel.getTrailById(trailId).value
+        lifecycleScope.launch {
+            trail = trailViewModel.getTrailByIdSuspend(trailId)
+            trail?.let {
+                Log.d("StopwatchFragment", "Fetched trail: ${it.stopwatchRunning}")
+                updateUI(it)
+                if (it.stopwatchRunning)
+                    startStopwatch(it.stopwatchStartTime, it.elapsedTime)
+            }
+
+            // Set up the observer to update the UI when the Trail data changes
+            trailViewModel.getTrailById(trailId).observe(viewLifecycleOwner, Observer { updatedTrail ->
+                trail = updatedTrail
+                updatedTrail?.let {
+                    Log.d("StopwatchFragment", "Trail updated: ${it.stopwatchRunning}")
+                    updateUI(it)
+                }
+            })
+        }
+
 
         tvTime = view.findViewById(R.id.stopwatchTime)
         btnPlayPause = view.findViewById(R.id.stopwatchPlayButton)
         btnClear = view.findViewById(R.id.stopwatchClearButton)
-        trail?.let {
-            val now = System.currentTimeMillis()
-            val elapsed = now - it.stopwatchStartTime + it.elapsedTime
-            val seconds = (elapsed / 1000) % 60
-            val minutes = (elapsed / (1000 * 60)) % 60
-            val hours = (elapsed / (1000 * 60 * 60)) % 24
-            tvTime.text =
-                String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
-        }
 
         btnPlayPause.setOnClickListener {
             if (isRunning) {
@@ -81,68 +94,94 @@ class StopwatchFragment : Fragment() {
         btnClear.setOnClickListener {
             clearStopwatch()
         }
+    }
 
-        trailViewModel.getTrailById(trailId).observe(viewLifecycleOwner, Observer { updatedTrail ->
-            trail = updatedTrail
-            updatedTrail?.let {
-                val currentTime = System.currentTimeMillis()
-                val elapsedTime = if (it.stopwatchRunning) {
-                    currentTime - it.stopwatchStartTime + it.elapsedTime
-                } else {
-                    it.elapsedTime
-                }
-                updateTimerText(elapsedTime)
+    private fun updateUI(trail: Trail) {
+        val currentTime = System.currentTimeMillis()
+        val elapsedTime = if (trail.stopwatchRunning) {
+            currentTime - trail.stopwatchStartTime + trail.elapsedTime
+        } else {
+            trail.elapsedTime
+        }
+        updateTimerText(elapsedTime)
 
-                if (it.stopwatchRunning) {
-                    isRunning = true
-                    btnPlayPause.setImageResource(R.drawable.ic_pause_dark)
-                    startStopwatch(it.stopwatchStartTime, it.elapsedTime)
-                } else {
-                    isRunning = false
-                    btnPlayPause.setImageResource(R.drawable.ic_play_dark)
-                }
-            }
-        })
+        if (trail.stopwatchRunning) {
+            isRunning = true
+            btnPlayPause.setImageResource(R.drawable.ic_pause_dark)
+//            startStopwatch(trail.stopwatchStartTime, trail.elapsedTime)
+        } else {
+            isRunning = false
+            btnPlayPause.setImageResource(R.drawable.ic_play_dark)
+        }
     }
 
     private fun startStopwatch(startTime: Long = System.currentTimeMillis(), elapsedTime: Long = 0L) {
+        Log.d("StopwatchFragment", "Starting stopwatch from $startTime with elapsed $elapsedTime")
+        btnPlayPause.setImageResource(R.drawable.ic_pause_dark)
         trail?.let {
             it.stopwatchRunning = true
-            it.stopwatchStartTime = startTime
+            it.stopwatchStartTime = startTime - it.elapsedTime
             it.elapsedTime = elapsedTime
-            trailViewModel.update(it)
+            lifecycleScope.launch {
+                try {
+                    trailViewModel.update(it)
+                } catch (e: Exception) {
+                    Log.e("StopwatchFragment", "Error updating trail: ${e.message}")
+                }
+            }
         }
         isRunning = true
-        btnPlayPause.setImageResource(R.drawable.ic_pause_dark)
         handler.post(updateRunnable)
     }
 
     private fun pauseStopwatch() {
+        Log.d("StopwatchFragment", "test stopwatch")
+        btnPlayPause.setImageResource(R.drawable.ic_play_dark)
         handler.removeCallbacks(updateRunnable)
+        handler.removeCallbacksAndMessages(null)
+        isRunning = false
         trail?.let {
             it.stopwatchRunning = false
-            it.elapsedTime = System.currentTimeMillis() - it.stopwatchStartTime + it.elapsedTime
-            trailViewModel.update(it)
+            it.elapsedTime = System.currentTimeMillis() - it.stopwatchStartTime
+            lifecycleScope.launch {
+                try {
+                    trailViewModel.update(it)
+                } catch (e: Exception) {
+                    Log.e("StopwatchFragment", "Error updating trail: ${e.message}")
+                }
+            }
         }
-        isRunning = false
-        btnPlayPause.setImageResource(R.drawable.ic_play_dark)
+        Log.d("StopwatchFragment", "Paused stopwatch")
     }
 
     private fun clearStopwatch() {
         handler.removeCallbacks(updateRunnable)
+        handler.removeCallbacksAndMessages(null)
+        isRunning = false
         trail?.let {
             it.stopwatchRunning = false
             it.stopwatchStartTime = 0L
             it.elapsedTime = 0L
-            trailViewModel.update(it)
+            lifecycleScope.launch {
+                try {
+                    trailViewModel.update(it)
+                } catch (e: Exception) {
+                    Log.e("StopwatchFragment", "Error updating trail: ${e.message}")
+                }
+            }
         }
-        isRunning = false
         tvTime.text = "00:00:00"
         btnPlayPause.setImageResource(R.drawable.ic_play_dark)
+        Log.d("StopwatchFragment", "Cleared stopwatch")
     }
+
+
 
     private val updateRunnable = object : Runnable {
         override fun run() {
+//                Log.d("StopwatchFragment", "Updating timer text")
+            if (!isRunning)
+                return
             trail?.let {
                 val now = System.currentTimeMillis()
                 val elapsed = now - it.stopwatchStartTime + it.elapsedTime

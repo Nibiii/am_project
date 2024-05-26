@@ -95,6 +95,10 @@ class TrailViewModel(application: Application) : AndroidViewModel(application) {
     fun getTrailById(id: Int): LiveData<Trail> {
         return repository.getTrailById(id)
     }
+
+    suspend fun getTrailByIdSuspend(id: Int): Trail? {
+        return repository.getTrailByIdSuspend(id)
+    }
 }
 
 class TrailRepository(private val trailDao: TrailDao) {
@@ -115,6 +119,10 @@ class TrailRepository(private val trailDao: TrailDao) {
 
     fun getTrailById(id: Int): LiveData<Trail> {
         return trailDao.getTrailById(id)
+    }
+
+    suspend fun getTrailByIdSuspend(id: Int): Trail? {
+        return trailDao.getTrailByIdSuspend(id)
     }
 }
 
@@ -182,4 +190,7 @@ interface TrailDao {
 
     @Query("SELECT * FROM trails")
     fun getAllTrails(): LiveData<List<Trail>>
+
+    @Query("SELECT * FROM trails WHERE id = :id")
+    suspend fun getTrailByIdSuspend(id: Int): Trail?
 }
