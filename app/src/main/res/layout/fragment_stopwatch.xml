@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".StopwatchFragment"
+    android:padding="10dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/stopwatchTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="10dp"
+        android:gravity="center" />
+
+    <ImageButton
+        android:id="@+id/stopwatchPlayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_dark"
+        android:background="?attr/selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="@string/StopwatchPlayBtnLabel"/>
+
+    <ImageButton
+        android:id="@+id/stopwatchClearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_trash_dark"
+        android:background="?attr/selectableItemBackground"
+        android:layout_weight="1"
+        android:contentDescription="@string/StopwatchStopBtnLabel"/>
+</LinearLayout>

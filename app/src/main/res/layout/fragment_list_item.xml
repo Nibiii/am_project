@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutFragmentListItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10sp"
-    tools:context=".FragmentListItem"
-    android:background="@drawable/layout_border">
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/listItemTitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/trailName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        tools:text="@tools:sample/cities" />
+        android:textColor="@color/black"/>
 
     <TextView
-        android:id="@+id/listItemDifficulty"
-        android:layout_width="wrap_content"
+        android:id="@+id/trailDescription"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="@tools:sample/lorem" />
-
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
 </LinearLayout>
