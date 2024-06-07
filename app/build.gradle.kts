@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.drawerlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -54,5 +56,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
     implementation("androidx.room:room-runtime:2.4.1")
     implementation("androidx.room:room-ktx:2.4.1")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.google.android.material:material:1.0.0")
     ksp("androidx.room:room-compiler:2.6.1")
 }

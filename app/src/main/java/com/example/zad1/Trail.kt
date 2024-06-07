@@ -28,6 +28,7 @@ data class Trail(
     var description: String,
     var difficulty: String,
     var length: Int,
+    var imageUrl: String,
     var stopwatchRunning: Boolean = false,
     var stopwatchStartTime: Long = 0L,
     var elapsedTime: Long = 0L
@@ -38,6 +39,7 @@ data class Trail(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readInt() ?: 0,
+        parcel.readString() ?: "",
         parcel.readByte() != 0.toByte(),
         parcel.readLong(),
         parcel.readLong()
@@ -49,6 +51,7 @@ data class Trail(
         parcel.writeString(description)
         parcel.writeString(difficulty)
         parcel.writeInt(length)
+        parcel.writeString(imageUrl)
         parcel.writeByte(if (stopwatchRunning) 1 else 0)
         parcel.writeLong(stopwatchStartTime)
         parcel.writeLong(elapsedTime)
@@ -165,9 +168,9 @@ abstract class AppDatabase : RoomDatabase() {
         suspend fun populateDatabase(trailDao: TrailDao) {
             // Insert the initial data into the database here.
             val trails = listOf(
-                Trail(name = "Trail 1", description = "Description 1", difficulty = "Easy", length = 1),
-                Trail(name = "Trail 2", description = "Description 2", difficulty = "Medium", length = 1),
-                Trail(name = "Trail 3", description = "Description 3", difficulty = "Hard", length = 1)
+                Trail(name = "Trail 1", description = "Description 1", difficulty = "Easy", length = 1, imageUrl = "https://img.lovepik.com/free-png/20211211/lovepik-nepal-hiking-trail-png-image_401486031_wh1200.png"),
+                Trail(name = "Trail 2", description = "Description 2", difficulty = "Medium", length = 1, imageUrl = "https://img.lovepik.com/free-png/20211211/lovepik-nepal-hiking-trail-png-image_401486031_wh1200.png"),
+                Trail(name = "Trail 3", description = "Description 3", difficulty = "Hard", length = 1, imageUrl = "https://img.lovepik.com/free-png/20211211/lovepik-nepal-hiking-trail-png-image_401486031_wh1200.png")
             )
             trails.forEach { trailDao.insert(it) }
         }

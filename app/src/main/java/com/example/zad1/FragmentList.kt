@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 
 class FragmentList : Fragment(), OnTrailClickListener {
 
@@ -50,7 +51,7 @@ class FragmentList : Fragment(), OnTrailClickListener {
         Log.d("info", "odpaloned")
         trailAdapter = TrailAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
         recyclerView.adapter = trailAdapter
 
         trailViewModel.allTrails.observe(viewLifecycleOwner, Observer { trails ->
@@ -61,7 +62,7 @@ class FragmentList : Fragment(), OnTrailClickListener {
             recyclerView.context,
             (recyclerView.layoutManager as LinearLayoutManager).orientation
         )
-        recyclerView.addItemDecoration(dividerItemDecoration)
+//        recyclerView.addItemDecoration(dividerItemDecoration)
     }
 
     override fun onTrailClick(trail: Trail) {

@@ -8,10 +8,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 //class TrailAdapter(
 //    private val trails: List<Trail>,
@@ -77,22 +80,30 @@ class TrailAdapter : RecyclerView.Adapter<TrailAdapter.TrailViewHolder>() {
 
     class TrailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trailName: TextView = itemView.findViewById(R.id.trailName)
-        private val trailDescription: TextView = itemView.findViewById(R.id.trailDescription)
+//        private val trailDescription: TextView = itemView.findViewById(R.id.trailDescription)
+        private val cardView: CardView = itemView.findViewById(R.id.cardView)
+        private val trailImage: ImageView = itemView.findViewById(R.id.trailImage)
+        
 
         fun bind(trail: Trail) {
             trailName.text = trail.name
-            trailDescription.text = trail.description
+//            trailDescription.text = trail.description
+            Glide.with(itemView.context)
+                .load(trail.imageUrl)
+                .placeholder(R.drawable.image_placeholder)
+                .into(trailImage)
 
-            itemView.setOnClickListener {
+            cardView.setOnClickListener {
                 val startColor = ContextCompat.getColor(itemView.context, android.R.color.transparent)
                 val endColor = ContextCompat.getColor(itemView.context, android.R.color.darker_gray)
-                animateBackgroundColor(itemView, startColor, endColor, 150L)
+//                animateBackgroundColor(itemView, startColor, endColor, 150L)
 
                 val context = itemView.context
                 val intent = Intent(context, SecondaryActivity::class.java).apply {
                     putExtra("trail", trail)
                 }
                 context.startActivity(intent)
+//                animateBackgroundColor(itemView, endColor, startColor, 150L)
             }
         }
     }

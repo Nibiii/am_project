@@ -25,4 +25,8 @@
     <string name="descriptionLabel">Description:</string>
     <string name="StopwatchPlayBtnLabel">Play/Pause</string>
     <string name="StopwatchStopBtnLabel">Stop/Clean</string>
+    <string name="navigation_drawer_open">test</string>
+    <string name="navigation_drawer_close">test</string>
+    <string name="nav_open">open</string>
+    <string name="nav_close">close</string>
 </resources>
