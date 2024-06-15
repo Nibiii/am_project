@@ -21,7 +21,7 @@
         android:id="@+id/stopwatchPlayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_play_dark"
+        android:src="@drawable/ic_play"
         android:background="?attr/selectableItemBackground"
         android:layout_weight="1"
         android:layout_marginEnd="10dp"
@@ -31,7 +31,7 @@
         android:id="@+id/stopwatchClearButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_trash_dark"
+        android:src="@drawable/ic_trash"
         android:background="?attr/selectableItemBackground"
         android:layout_weight="1"
         android:contentDescription="@string/StopwatchStopBtnLabel"/>

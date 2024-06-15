@@ -62,17 +62,14 @@ class StopwatchFragment : Fragment() {
         lifecycleScope.launch {
             trail = trailViewModel.getTrailByIdSuspend(trailId)
             trail?.let {
-                Log.d("StopwatchFragment", "Fetched trail: ${it.stopwatchRunning}")
                 updateUI(it)
                 if (it.stopwatchRunning)
                     startStopwatch(it.stopwatchStartTime, it.elapsedTime)
             }
 
-            // Set up the observer to update the UI when the Trail data changes
             trailViewModel.getTrailById(trailId).observe(viewLifecycleOwner, Observer { updatedTrail ->
                 trail = updatedTrail
                 updatedTrail?.let {
-                    Log.d("StopwatchFragment", "Trail updated: ${it.stopwatchRunning}")
                     updateUI(it)
                 }
             })
@@ -107,17 +104,15 @@ class StopwatchFragment : Fragment() {
 
         if (trail.stopwatchRunning) {
             isRunning = true
-            btnPlayPause.setImageResource(R.drawable.ic_pause_dark)
-//            startStopwatch(trail.stopwatchStartTime, trail.elapsedTime)
+            btnPlayPause.setImageResource(R.drawable.ic_pause)
         } else {
             isRunning = false
-            btnPlayPause.setImageResource(R.drawable.ic_play_dark)
+            btnPlayPause.setImageResource(R.drawable.ic_play)
         }
     }
 
     private fun startStopwatch(startTime: Long = System.currentTimeMillis(), elapsedTime: Long = 0L) {
-        Log.d("StopwatchFragment", "Starting stopwatch from $startTime with elapsed $elapsedTime")
-        btnPlayPause.setImageResource(R.drawable.ic_pause_dark)
+        btnPlayPause.setImageResource(R.drawable.ic_pause)
         trail?.let {
             it.stopwatchRunning = true
             it.stopwatchStartTime = startTime - it.elapsedTime
@@ -126,7 +121,6 @@ class StopwatchFragment : Fragment() {
                 try {
                     trailViewModel.update(it)
                 } catch (e: Exception) {
-                    Log.e("StopwatchFragment", "Error updating trail: ${e.message}")
                 }
             }
         }
@@ -135,8 +129,7 @@ class StopwatchFragment : Fragment() {
     }
 
     private fun pauseStopwatch() {
-        Log.d("StopwatchFragment", "test stopwatch")
-        btnPlayPause.setImageResource(R.drawable.ic_play_dark)
+        btnPlayPause.setImageResource(R.drawable.ic_play)
         handler.removeCallbacks(updateRunnable)
         handler.removeCallbacksAndMessages(null)
         isRunning = false
@@ -151,7 +144,6 @@ class StopwatchFragment : Fragment() {
                 }
             }
         }
-        Log.d("StopwatchFragment", "Paused stopwatch")
     }
 
     private fun clearStopwatch() {
@@ -171,15 +163,13 @@ class StopwatchFragment : Fragment() {
             }
         }
         tvTime.text = "00:00:00"
-        btnPlayPause.setImageResource(R.drawable.ic_play_dark)
-        Log.d("StopwatchFragment", "Cleared stopwatch")
+        btnPlayPause.setImageResource(R.drawable.ic_play)
     }
 
 
 
     private val updateRunnable = object : Runnable {
         override fun run() {
-//                Log.d("StopwatchFragment", "Updating timer text")
             if (!isRunning)
                 return
             trail?.let {

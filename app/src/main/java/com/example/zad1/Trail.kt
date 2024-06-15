@@ -166,11 +166,10 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(trailDao: TrailDao) {
-            // Insert the initial data into the database here.
             val trails = listOf(
                 Trail(name = "Trail 1", description = "Description 1", difficulty = "Easy", length = 1, imageUrl = "https://img.lovepik.com/free-png/20211211/lovepik-nepal-hiking-trail-png-image_401486031_wh1200.png"),
-                Trail(name = "Trail 2", description = "Description 2", difficulty = "Medium", length = 1, imageUrl = "https://img.lovepik.com/free-png/20211211/lovepik-nepal-hiking-trail-png-image_401486031_wh1200.png"),
-                Trail(name = "Trail 3", description = "Description 3", difficulty = "Hard", length = 1, imageUrl = "https://img.lovepik.com/free-png/20211211/lovepik-nepal-hiking-trail-png-image_401486031_wh1200.png")
+                Trail(name = "Trail 2", description = "Description 2", difficulty = "Medium", length = 1, imageUrl = "https://thumbs.dreamstime.com/b/hiking-trail-photo-woods-taken-tilt-shift-lens-to-achieve-dreamy-look-excellent-background-design-work-54512538.jpg"),
+                Trail(name = "Trail 3", description = "Description 3", difficulty = "Hard", length = 1, imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWOPVz813BpHkOv2SmEva98TChtSHXqz0zAw&s")
             )
             trails.forEach { trailDao.insert(it) }
         }

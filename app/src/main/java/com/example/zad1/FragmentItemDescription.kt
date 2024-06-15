@@ -1,11 +1,11 @@
+package com.example.zad1
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import android.widget.TextView
-import com.example.zad1.R
-import com.example.zad1.Trail
 
 class TrailDetailFragment : Fragment() {
 
